@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tặng Em</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #ffcccb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .big-heart {
+            position: absolute;
+            top: -200px;
+            width: 150px;
+            height: 150px;
+            animation: flyIn 3s ease-in-out forwards, explodeFirework 4s ease-in-out 3s forwards;
+        }
+
+        .message {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: yellow;
+            text-shadow: 3px 3px 6px red, 0 0 10px white;
+            opacity: 0;
+            margin: 10px;
+        }
+
+        @keyframes flyIn {
+            0% {
+                top: -200px;
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                top: 50%;
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes explodeFirework {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(3);
+            }
+        }
+
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .firework {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            animation: fireworkEffect 1s ease-out forwards;
+        }
+
+        @keyframes fireworkEffect {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(3) translateY(-50px);
+            }
+        }
+
+        .falling-flower {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            opacity: 0.8;
+            animation: fallAnimation 5s linear infinite;
+        }
+
+        @keyframes fallAnimation {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .cursor-text {
+            position: absolute;
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px red;
+            pointer-events: none;
+            animation: fadeOutText 1s ease-out forwards;
+        }
+
+        @keyframes fadeOutText {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-inspire.mp3" type="audio/mp3">
+    </audio>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" class="big-heart" alt="Big Heart" id="bigHeart">
+    <div id="messageContainer"></div>
+
+    <script>
+        const messages = [
+            "Chúc mừng ngày 8/3! 💐",
+            "❤️ Nụ cười oanh, sáng dạt dào niềm vui.",
+            "❤️ Chúc em luôn xinh đẹp và hạnh phúc!",
+            "❤️ Bé cố gắng lên nha!!!"
+        ];
+
+        function showMessages() {
+            const container = document.getElementById("messageContainer");
+            messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    const message = document.createElement("div");
+                    message.className = "message";
+                    message.innerText = msg;
+                    message.style.animation = "fadeInText 2s ease-in-out forwards";
+                    container.appendChild(message);
+                }, index * 3000);
+            });
+        }
+
+        setTimeout(showMessages, 5000);
+
+        function createFireworkEffect(x, y) {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement("img");
+                    firework.src = "https://cdn-icons-png.flaticon.com/512/833/833472.png";
+                    firework.className = "firework";
+                    firework.style.left = x + Math.random() * 50 - 25 + "px";
+                    firework.style.top = y + Math.random() * 50 - 25 + "px";
+                    document.body.appendChild(firework);
+                    setTimeout(() => firework.remove(), 1000);
+                }, i * 100);
+            }
+        }
+
+        setTimeout(() => {
+            const heart = document.getElementById("bigHeart");
+            const rect = heart.getBoundingClientRect();
+            createFireworkEffect(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        }, 4000);
+
+        document.addEventListener("mousemove", function (event) {
+            const text = document.createElement("span");
+            text.className = "cursor-text";
+            text.style.left = event.clientX + "px";
+            text.style.top = event.clientY + "px";
+            text.innerText = "💖 CHÚC MỪNG 8/3 💖";
+            document.body.appendChild(text);
+            setTimeout(() => text.remove(), 1000);
+        });
+
+        document.addEventListener("click", function (event) {
+            createFireworkEffect(event.clientX, event.clientY);
+            document.getElementById("backgroundMusic").play();
+        });
+
+        function createFallingFlowers() {
+            setInterval(() => {
+                const flower = document.createElement("img");
+                flower.src = "https://cdn-icons-png.flaticon.com/512/826/826955.png";
+                flower.className = "falling-flower";
+                flower.style.left = Math.random() * window.innerWidth + "px";
+                flower.style.animationDuration = (5 + Math.random() * 5) + "s";
+                document.body.appendChild(flower);
+
+                setTimeout(() => flower.remove(), 1000);
+            }, 500);
+        }
+
+        createFallingFlowers();
+        document.addEventListener("DOMContentLoaded", function () {
+            const audio = document.getElementById("backgroundMusic");
+
+            // Khi nhạc kết thúc, phát lại từ đầu
+            audio.addEventListener("ended", function () {
+                audio.currentTime = 0;
+                audio.play();
+            });
+
+            // Thử phát nhạc khi trang tải xong
+            audio.play().catch(error => {
+                console.log("Trình duyệt chặn phát nhạc, cần tương tác:", error);
+                document.addEventListener("click", playMusic);
+                document.addEventListener("mousemove", playMusic);
+            });
+
+            function playMusic() {
+                if (audio.paused) {
+                    audio.play();
+                    document.removeEventListener("click", playMusic);
+                    document.removeEventListener("mousemove", playMusic);
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
